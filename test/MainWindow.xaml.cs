@@ -26,32 +26,75 @@ namespace test
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+    /// 
+
+
+    /*
+    AUTHOR: Emma Sevant (emma.sevant@jacobs.com)
+
+
+       !!      :  Pending Code Changes
+     // OLD    :  Old line of code, should be deleted once new code functions 
+
+    User Enters Properties.
+    -> boxColor() changes the boxes on each row from red to green when they are populated
+
+    Save/ saveas buttons.
+    -> this writes each property into a txt file which is named and saved in a chosen folder by the user
+    -> The location and name for this property txt file is saved in another txt file 'saveasFileLocation' @"C:\Users\sevantej\OneDrive - Jacobs\Documents\Technical\Report Automation\AutomatedDocuments\saveasFileLocation.txt
+       !! this location will be different for each user
+    -> This means that when save is pressed it finds the saveas txt file (using 'saveasFileLocation.txt') and overites it
+
+    Open button.
+    -> User selcts a txt file 
+       !! need to add code so that the user only opens the right 'kind' of txt file
+    -> Parameters are read from txt file then atomatiaclly populated
+    -> This also changes the file path in 'saveasFileLocation.txt' to the opened file's location => it's updated when save is pressed
+
+    Create Report button.
+    -> 
+
+    User closes.
+    -> 'saveasFileLocation.txt' is deleted
+       !! should propmt the user to save before closing if they havn't saved 
+
+    */
+
     public partial class MainWindow : Window
     {
         public MainWindow()
         {
             InitializeComponent();
+            // Delete saveasFileLocation if this exists
+            // !! this location will be different for each user
+            var saveasFileLocation = @"C:\Users\sevantej\OneDrive - Jacobs\Documents\Technical\Report Automation\AutomatedDocuments\saveasFileLocation.txt";
+            File.Delete(saveasFileLocation);
         }
 
+
+
         // Important Buttons
-        private void packTxt(string inputValuesFileName)
+        private void packTxt(string propertiesTxtfileName)
         {
             // Write all user inputs into a txt file
+
+            // Checks how many properties there are in the app (numberOfProperties)
             int numberOfProperties = 1;
             while (FindName($"name{numberOfProperties}") != null)
             { numberOfProperties = numberOfProperties + 1; }
             numberOfProperties = numberOfProperties - 1;
 
-
-            string[] first = new string[numberOfProperties + 1]; // string containing perameter names (defined by label content)
-            string[] second = new string[numberOfProperties + 1]; // string containing values inputed by user (defined by textbox/ combobox)
+            // Column for Property Name
+            string[] propertyName = new string[numberOfProperties + 1]; // string containing perameter names (defined by label content)
+            // Coumn for porperty value
+            string[] propertyValue = new string[numberOfProperties + 1]; // string containing values inputed by user (defined by textbox/ combobox)
             int i = 1;
             //Label test = FindName($"name{1}") as Label;
             //while (FindName($"name{i}") != null)
             while (i <= numberOfProperties)
             {
                 Label lb = FindName($"name{i}") as Label;
-                first[i] = (string)lb.Content;
+                propertyName[i] = (string)lb.Content;
                 object isTextBox = FindName($"text{i}");
                 object isComboBox = FindName($"select{i}");
                 object isDatePicker = FindName($"date{i}");
@@ -59,99 +102,98 @@ namespace test
                 {
                     TextBox tb = FindName($"text{i}") as TextBox;
                     if (tb.Text != "")
-                        second[i] = tb.Text;
-                    else { second[i] = "-empty-"; }
+                        propertyValue[i] = tb.Text;
+                    else { propertyValue[i] = "-empty-"; }
                 }
                 else if (isComboBox != null)
                 {
                     ComboBox cb = FindName($"select{i}") as ComboBox;
                     if (cb.Text != "")
-                        second[i] = cb.Text;
-                    else { second[i] = "-empty-"; }
+                        propertyValue[i] = cb.Text;
+                    else { propertyValue[i] = "-empty-"; }
                 }
                 else if (isDatePicker != null)
                 {
                     DatePicker dp = FindName($"date{i}") as DatePicker;
                     if (dp.SelectedDate.ToString() != "")
-                        second[i] = dp.SelectedDate.ToString();
-                    else { second[i] = "-empty-"; }
+                        propertyValue[i] = dp.SelectedDate.ToString();
+                    else { propertyValue[i] = "-empty-"; }
                 }
                 i++;
             }
 
             //// Write first Column
-            //var first = new[] { "PARAMETERS", ".--------Report Details---------", "Project---------------------------", "select1", "Reason for Div", "Project Name", "Infr Client/s", "Pipeline Name", "Pipeline Number", "Diversion", "Bore Size" };
-            File.WriteAllLines(inputValuesFileName, first);
+            // OLD var propertyName = new[] { "PARAMETERS", ".--------Report Details---------", "Project---------------------------", "select1", "Reason for Div", "Project Name", "Infr Client/s", "Pipeline Name", "Pipeline Number", "Diversion", "Bore Size" };
+            File.WriteAllLines(propertiesTxtfileName, propertyName);
 
             // Write second Column and add it onto the fist in the txt file
-            //var second = new[] { "VALUE", "", "", select1.Text, select2.Text, text3.Text, text4.Text, text5.Text, text6.Text, text7.Text, select8.Text };
-            var file = File.ReadAllLines(inputValuesFileName);
+            // OLD var propertyValue = new[] { "VALUE", "", "", select1.Text, select2.Text, text3.Text, text4.Text, text5.Text, text6.Text, text7.Text, select8.Text };
+            var file = File.ReadAllLines(propertiesTxtfileName);
             for (int ii = 0; ii < file.Length; ii++)
-                file[ii] += '\t' + second[ii]; //add the second column after the first, with a tab
-            File.WriteAllLines(inputValuesFileName, file);
+                file[ii] += '\t' + propertyValue[ii]; //add the second column after the first, with a tab
+            File.WriteAllLines(propertiesTxtfileName, file);
         }
-        private void unpackTxt(string inputValuesFileName)
+        private void sortPropertiesTxtFile(string propertiesTxtfileName, out string[] outputPropertyArray)
         {
             // read input values file
-            string phrase = System.IO.File.ReadAllText(inputValuesFileName);
 
-            // split up the string into an array and delete un-necessary rows
-            string[] words = phrase.Split('\t', '\n', '\r');
-            string[] newWords = new string[words.Length];
-            var ii = 0;
-            for (int i = 0; i < words.Length; i++)
-                // If that string doesnt contain '-' and it isnt length 0 then it will be included in the new list
-                // if (words[i].Contains('-') == false && words[i].Length != 0)
-                if (words[i].Length != 0)
-                {
-                    newWords[ii] = words[i];
-                    ii = ii + 1;
-                }
+            // string propertiesTxtfileName = System.IO.File.ReadAllText(saveasFileLocation);
+            string txtFileString = System.IO.File.ReadAllText(propertiesTxtfileName);
 
-            for (int i = 0; i < newWords.Length; i=i+2)
+            // split up the string into an array (-> txtFileMessyArray) and delete un-necessary rows (-> txtFileArray)
+            string[] txtFileArray = txtFileString.Split('\t', '\n', '\r');
+            string[] propertiesArray = new string[txtFileArray.Length];
+
+            // Exclude empty cells
+            var ii = 0; // propertiesArray index
+            for (int i = 0; i < txtFileArray.Length; i++)
+                if (txtFileArray[i].Length != 0)
+                { propertiesArray[ii] = txtFileArray[i]; ii++; }
+
+            outputPropertyArray = propertiesArray;
+        }
+        private void unpackTxt(string propertiesTxtfileName)
+        {
+            string[] propertiesArray;
+            sortPropertiesTxtFile(propertiesTxtfileName, out propertiesArray);
+
+            for (int i = 0; i < propertiesArray.Length; i = i + 2)
             {
                 int n = (i + 2) / 2;
                 if (FindName($"select{n}") != null)
                 {
                     ComboBox tb = FindName($"select{n}") as ComboBox;
-                    tb.Text = newWords[i + 1];
+                    tb.Text = propertiesArray[i + 1];
                 }
                 else if (FindName($"text{n}") != null)
                 {
                     TextBox tb = FindName($"text{n}") as TextBox;
-                    if (newWords[i + 1] != "-empty-")
-                    { tb.Text = newWords[i + 1]; }
+                    if (propertiesArray[i + 1] != "-empty-")
+                    { tb.Text = propertiesArray[i + 1]; }
                     else
                     { tb.Text = ""; }
                 }
                 else if (FindName($"date{n}") != null)
                 {
                     DatePicker dp = FindName($"date{n}") as DatePicker;
-                    if (newWords[i + 1] != "-empty-")
-                    {dp.SelectedDate = Convert.ToDateTime(newWords[i + 1]); } // add code to say 'select a date' is newWords[i + 1] = "-empty-"
+                    if (propertiesArray[i + 1] != "-empty-")
+                    { dp.SelectedDate = Convert.ToDateTime(propertiesArray[i + 1]); } // add code to say 'select a date' if date property value (newWords[i + 1]) = "-empty-"
                 }
             }
 
-            //TextBox tb = FindName("select1") as TextBox;
-            //tb.Text = newWords[1];
-            //select2.Text = newWords[3];
-            //text3.Text = newWords[5];
-            //text4.Text = newWords[7];
-            //text5.Text = newWords[8];
-            //text6.Text = newWords[10];
-            //text7.Text = newWords[12];
-            //select8.Text = newWords[14];
         }
-        private void temporyFileNameStore(string txtFileName)
+        private void temporyFileNameStore(string propertiesTxtfileName)
         {
-            //  Stores txtFileName in a new txt file (saveasFileLoaction.txt)
+            //  Stores txtFileName in a new txt file (saveasFileLocation.txt)
 
             //  allows txtFileName to be brought back from saveasFileLocation later
             //  (this new txt file is deleted when the application is closed)
 
-            var saveasFileLocation = @"C:\Users\sevantej\OneDrive - Jacobs\Documents\Technical\Report Automation\AutomatedDocuments\saveasFileLoaction.txt";
+            // !! this location will be different for each user
+            var saveasFileLocation = @"C:\Users\sevantej\OneDrive - Jacobs\Documents\Technical\Report Automation\AutomatedDocuments\saveasFileLocation.txt";
+
             //if (File.Exists(saveasFileLocation)) { File.Delete(saveasFileLocation); }
-            File.WriteAllText(saveasFileLocation, txtFileName);
+            File.WriteAllText(saveasFileLocation, propertiesTxtfileName);
         }
         private void emmasSaveas()
         {
@@ -180,11 +222,12 @@ namespace test
             try
             {
                 // Check if file already exists. If yes, delete it.     
-                var saveasFileLocation = @"C:\Users\sevantej\OneDrive - Jacobs\Documents\Technical\Report Automation\AutomatedDocuments\saveasFileLoaction.txt";
+                // !! this location will be different for each user
+                var saveasFileLocation = @"C:\Users\sevantej\OneDrive - Jacobs\Documents\Technical\Report Automation\AutomatedDocuments\saveasFileLocation.txt";
                 if (File.Exists(saveasFileLocation))
                 {
-                    string fileName = System.IO.File.ReadAllText(saveasFileLocation);
-                    packTxt(fileName);
+                    string propertiesTxtfileName = System.IO.File.ReadAllText(saveasFileLocation);
+                    packTxt(propertiesTxtfileName);
                     MessageBox.Show("Options Saved!");
                 }
                 else { emmasSaveas(); }
@@ -213,6 +256,30 @@ namespace test
                 temporyFileNameStore(openFileDialog.FileName);
             }
         }
+        public bool fileIsOpen(string filePath)
+        {
+            System.IO.FileStream a = null;
+
+            try
+            {
+                a = System.IO.File.Open(filePath,
+                System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.None);
+                return false;
+            }
+            catch (System.IO.IOException ex)
+            {
+                return true;
+            }
+
+            finally
+            {
+                if (a != null)
+                {
+                    a.Close();
+                    a.Dispose();
+                }
+            }
+        }
         static public void ReleaseComObjectsUsingGC()
         {
             // Help from Brian Boye: https://github.com/People-Places-Solutions/Geo-Digital_ExcelWrapper 
@@ -239,23 +306,101 @@ namespace test
         }
         private void goButton_Click(object sender, RoutedEventArgs e)
         {
-            emmasSave();
+            // Check word doc is closed and exit if not
+
+            // Define filePath, where the document CDS_PROPS is saved
+            // !! this location will be different for each user
+            String reportFilePath = @"C:\Users\sevantej\OneDrive - Jacobs\Documents\Technical\Report Automation\AutomatedDocuments\CDS_PROPS.docx";
+
+            // !! make sure that the app can edit word whilst open
+            //if (fileIsOpen(reportFilePath))
+            //{
+            //    // !! Futrue development would be to add code (simular to below) that ensures the document is closed if already open
+
+            //    //var result = MessageBox.Show("ERROR: CDS_PROPS.docx is open!" + Environment.NewLine + "Would you like to close it now?", "Close Document",
+            //    //                 MessageBoxButton.YesNo);
+
+            //    //if (result == MessageBoxResult.Yes)
+            //    //{
+            //    //    Word.Application wordApp = new Word.Application();
+
+            //    //    Word._Document aDoc = wordApp.Documents[reportFilePath];
+            //    //    aDoc.Close(Word.WdSaveOptions.wdDoNotSaveChanges);
+            //    //}
+            //    MessageBox.Show("ERROR: CDS_PROPS.docx is open!" + Environment.NewLine + "Please close and try again.");
+            //    return;
+            //}
+
+            var saveasFileLocation = @"C:\Users\sevantej\OneDrive - Jacobs\Documents\Technical\Report Automation\AutomatedDocuments\saveasFileLocation.txt";
+            if (File.Exists(saveasFileLocation))
+            { emmasSave(); }
+            else { emmasSaveas(); }
             MessageBox.Show("This may take a minute, message box will pop up when done");
             /* Help from Brian Boye:
             https://github.com/People-Places-Solutions/Geo-Digital_ExcelWrapper */
-            try { updateDoc();}
+
+                try { updateDoc(reportFilePath);}
             finally {ReleaseComObjectsUsingGC();}
 
-            void updateDoc()
+            void updateDoc(string FilePath)
             {
-                // Define filePath, where the document CDS_PROPS is saved
-                String filePath = @"C:\Users\sevantej\OneDrive - Jacobs\Documents\Technical\Report Automation\AutomatedDocuments\CDS_PROPS.docx";
-
                 try
                 {
-                    // Make sure file exists
-                    if (File.Exists(filePath))
+                    if (File.Exists(reportFilePath))
                     {
+                        // !! old code for only editing whilst document is closed
+                        //// Open and activate word doc containing custom propeties
+                        //aDoc = wordApp.Documents.Open(reportFilePath, ReadOnly: false);
+                        //aDoc = wordApp.ActiveDocument;
+                        //aDoc.Application.Options.WarnBeforeSavingPrintingSendingMarkup = false;
+
+                        //// Open and activate word doc containing custom propeties
+                        //if (fileIsOpen(reportFilePath))
+                        //{
+                        //    Word.Application app = (Word.Application)System.Runtime.InteropServices.Marshal.GetActiveObject("Word.Application");
+                        //    if (app == null)
+                        //        return;
+
+                        //    string shortReportFilePath = reportFilePath.Substring(reportFilePath.Length - 71);
+                        //    foreach (Word.Document d in app.Documents)
+                        //    {
+                        //        string shortFullName = d.FullName.Substring(d.FullName.Length - 71);
+                        //        shortFullName = shortFullName.Replace('/','\\');
+                        //        if (shortFullName.ToLower() == shortReportFilePath.ToLower())
+                        //        {
+                        //            object saveOption = Word.WdSaveOptions.wdDoNotSaveChanges;
+                        //            object originalFormat = Word.WdOriginalFormat.wdOriginalDocumentFormat;
+                        //            object routeDocument = false;
+                        //            d.Close(ref saveOption, ref originalFormat, ref routeDocument);
+                        //            //app.Quit();
+
+                        //            //if (app != null)
+                        //            //{
+                        //            //    if (Marshal.IsComObject(app))
+                        //            //    {
+                        //            //        int outstanding_refs = Marshal.ReleaseComObject(app);
+                        //            //    }
+                        //            //}
+                        //            //if (d != null)
+                        //            //{
+                        //            //    if (Marshal.IsComObject(d))
+                        //            //    {
+                        //            //        int outstanding_refs = Marshal.ReleaseComObject(d);
+                        //            //    }
+                        //            //}
+                        //        }
+                        //    }
+                        //}
+                        bool wasOpen;
+                        if (fileIsOpen(FilePath))
+                        {
+                            wasOpen = true;
+                            try { closeDoc(reportFilePath); }
+                            finally { ReleaseComObjectsUsingGC(); }
+                        }
+                        else { wasOpen = false; }
+                        
+
                         // Code from: https://social.msdn.microsoft.com/Forums/sqlserver/en-US/8dc4afdf-8d12-4b6e-8de8-fc990f39c8c1/creating-n-accessing-custombuiltin-document-properties?forum=worddev
 
                         // Define perameters for later
@@ -263,92 +408,144 @@ namespace test
                         object DocCustomProps;
 
                         // Define aDoc as document and wordApp as the word application
-                        Word.Application wordApp = null;
-                        Word._Document aDoc = null;
-                        wordApp = new Word.Application();
-                        
+                        Word.Application wordApp;// !! = null;
+                        Word._Document aDoc;// !! = null;
+
                         // Open and activate word doc containing custom propeties
-                        aDoc = wordApp.Documents.Open(filePath, ReadOnly: false);
+                        wordApp = new Word.Application();
+                        aDoc = wordApp.Documents.Open(reportFilePath, ReadOnly: false);
                         aDoc = wordApp.ActiveDocument;
+                        aDoc.Application.Options.WarnBeforeSavingPrintingSendingMarkup = false;
 
                         //Get the CustomDocumentProperties collection and find out type.
                         DocCustomProps = aDoc.CustomDocumentProperties;
                         Type typeDocCustomProps = DocCustomProps.GetType();
 
-                        string strIndex = "Client Name";
-                        string strValue = select1.Text;
+                        // read input values file
+                        string propertiesTxtfileName = System.IO.File.ReadAllText(saveasFileLocation);
 
-                        typeDocCustomProps.InvokeMember("Item",
+                        // Form txt properties file into an array
+                        string[] custPropertyArray;
+                        sortPropertiesTxtFile(propertiesTxtfileName, out custPropertyArray);
+
+                        string customProperty;
+                        string customPropValue;
+
+                        // Allocate relevent property names to word custom property in the document
+                        for (int i = 0; i < 30 - 1; i = i + 2) // !! i < 30  needs to be changed
+                        {
+                            if (i != 2 && i != 6 && i != 18 && i != 24 && i != 28)  // !! make sure all label names = a customProperty in the word doc
+                            {
+                                customProperty = custPropertyArray[i];
+                                customPropValue = custPropertyArray[i + 1];
+
+                                //try
+                                //{
+                                typeDocCustomProps.InvokeMember("Item",
                                                    BindingFlags.Default |
                                                    BindingFlags.SetProperty,
                                                    null, DocCustomProps,
-                                                   new object[] { strIndex, strValue });
-
-                        strIndex = "Infrastructure Project Name";
-                        strValue = text3.Text;
-
-                        typeDocCustomProps.InvokeMember("Item",
-                                                   BindingFlags.Default |
-                                                   BindingFlags.SetProperty,
-                                                   null, DocCustomProps,
-                                                   new object[] { strIndex, strValue });
-
-                        strIndex = "Infrastructure Long Name";
-                        strValue = text4.Text;
-
-                        typeDocCustomProps.InvokeMember("Item",
-                                                   BindingFlags.Default |
-                                                   BindingFlags.SetProperty,
-                                                   null, DocCustomProps,
-                                                   new object[] { strIndex, strValue });
+                                                   new object[] { customProperty, customPropValue });
+                                //}
+                                //catch { MessageBox.Show($"Custom property does not exist in word template for label: '{customProperty}'"); }
+                            }
+                        }
 
 
                         // Update Property Fields in Document
-                        aDoc.Fields.Update();
+                        aDoc.Fields.Update();  // !! This times out
 
                         //Save the document  
                         aDoc.Save();
-                        MessageBox.Show("File Saved!");
 
-                        aDoc.Close(Word.WdSaveOptions.wdDoNotSaveChanges);
-                        wordApp.Quit();
-
-                        if (wordApp != null)
+                        if (wasOpen == true) // !! only close if the file was closed when button was pressed
+                        { wordApp.Visible = true; }
+                        else 
                         {
-                            if (Marshal.IsComObject(wordApp))
+                            aDoc.Close(Word.WdSaveOptions.wdDoNotSaveChanges);
+                            wordApp.Quit(); // !! fix later
+
+                            if (wordApp != null)
                             {
-                                int outstanding_refs = Marshal.ReleaseComObject(wordApp);
+                                if (Marshal.IsComObject(wordApp))
+                                {
+                                    int outstanding_refs = Marshal.ReleaseComObject(wordApp);
+                                }
+                            }
+                            if (aDoc != null)
+                            {
+                                if (Marshal.IsComObject(aDoc))
+                                {
+                                    int outstanding_refs = Marshal.ReleaseComObject(aDoc);
+                                }
                             }
                         }
-                        if (aDoc != null)
-                        {
-                            if (Marshal.IsComObject(aDoc))
-                            {
-                                int outstanding_refs = Marshal.ReleaseComObject(aDoc);
-                            }
-                        }
+
+                        MessageBox.Show("File Updated!");
 
                         return;
-
-
                     }
-                    else
-                    {
-                        MessageBox.Show("Document doesnt exist!");
-                        return;
-                    }
+                    else { MessageBox.Show("Document doesnt exist!"); return; }
                 }
-
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.ToString());
                 }
             }
+
+            void closeDoc(string FilePath)
+            {
+                var result = MessageBox.Show("Close Document without saving?" + Environment.NewLine + "(Doc must be closed to update)", "Close Document",
+                                 MessageBoxButton.YesNo); // !! add code to save current document before updating
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    // Open and activate word doc containing custom propeties
+
+                    Word.Application app = (Word.Application)System.Runtime.InteropServices.Marshal.GetActiveObject("Word.Application");
+                    if (app == null)
+                        return;
+
+                    string shortReportFilePath = reportFilePath.Substring(reportFilePath.Length - 71);
+                    foreach (Word.Document d in app.Documents)
+                    {
+                        string shortFullName = d.FullName.Substring(d.FullName.Length - 71);
+                        shortFullName = shortFullName.Replace('/', '\\');
+                        if (shortFullName.ToLower() == shortReportFilePath.ToLower())
+                        {
+                            object saveOption = Word.WdSaveOptions.wdDoNotSaveChanges;
+                            object originalFormat = Word.WdOriginalFormat.wdOriginalDocumentFormat;
+                            object routeDocument = false;
+                            d.Close(ref saveOption, ref originalFormat, ref routeDocument);
+                            app.Quit(); // !! fix later
+
+                            if (app != null)
+                            {
+                                if (Marshal.IsComObject(app))
+                                {
+                                    int outstanding_refs = Marshal.ReleaseComObject(app);
+                                }
+                            }
+                            if (d != null)
+                            {
+                                if (Marshal.IsComObject(d))
+                                {
+                                    int outstanding_refs = Marshal.ReleaseComObject(d);
+                                }
+                            }
+
+                        }
+                    }
+                }
+                
+            }
+
             //{ updateEx(); }
 
             void updateEx()
             {
                 // Define filePath, where the document CDS_PROPS is saved
+                // !! this location will be different for each user
                 String filePath = @"C:\Users\sevantej\OneDrive - Jacobs\Documents\Technical\Report Automation\Assumptions.xlsx";
 
                 try
@@ -415,7 +612,8 @@ namespace test
         }
         private void Window_Closed(object sender, EventArgs e)
         {
-            var saveasFileLocation = @"C:\Users\sevantej\OneDrive - Jacobs\Documents\Technical\Report Automation\AutomatedDocuments\saveasFileLoaction.txt";
+            // !! this location will be different for each user
+            var saveasFileLocation = @"C:\Users\sevantej\OneDrive - Jacobs\Documents\Technical\Report Automation\AutomatedDocuments\saveasFileLocation.txt";
             File.Delete(saveasFileLocation);
         }
 
