@@ -31,7 +31,7 @@ namespace test
     Save/ saveas buttons.
     -> this writes each property into a txt file which is named and saved in a chosen folder by the user
 
-    Open button.
+    Open button.   
     -> User selcts a txt file 
     -> Parameters are read from txt file then atomatiaclly populated
     -> This also changes the file path in directory.ToolTip
