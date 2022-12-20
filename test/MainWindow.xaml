@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:test"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" ResizeMode="NoResize" Closed="Window_Closed"
-    xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2">
+        Title="CDS Report Automation" Height="450" Width="800" ResizeMode="NoResize" Closed="Window_Closed"
+    xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2" Icon="/Logo.PNG">
     <Window.Resources>
         <Style x:Key="FocusVisual">
             <Setter Property="Control.Template">
@@ -418,21 +418,22 @@
         <Button Style="{DynamicResource ButtonStyle1}" Name="cButton" Content="Crossings " HorizontalContentAlignment="Right" FontSize="18" Grid.Row="5" Grid.Column="0" Background="Black" BorderBrush="Black" Foreground="White"/>
         <Button Style="{DynamicResource ButtonStyle1}" Name="eButton" Content="Environment " HorizontalContentAlignment="Right" FontSize="18" Grid.Row="6" Grid.Column="0" Background="Black" BorderBrush="Black" Foreground="White"/>
         <Button Style="{DynamicResource ButtonStyle1}" Name="dButton" Content="Drawings " HorizontalContentAlignment="Right" FontSize="18" Grid.Row="7" Grid.Column="0"  Background="Black" BorderBrush="Black" Foreground="White"/>
-        <Button Style="{DynamicResource ButtonStyle1}" Name="goButton" Content="Create Report!" HorizontalContentAlignment="Center" FontSize="18" Grid.Row="0" Grid.Column="1" Margin="5,5,5,5" HorizontalAlignment="Right" Background="White" BorderBrush="White" Click="goButton_Click"/>
-        <Button Style="{DynamicResource ButtonStyle1}" Name="save" Content="save" HorizontalContentAlignment="Center" Width="55" Margin="0,0,15,10" FontSize="18" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Background="White" BorderBrush="#FFA014" Foreground="Black" Click="save_Click"/>
-        <Button Style="{DynamicResource ButtonStyle1}" Name="saveas" Content="saveas"  HorizontalContentAlignment="Center" Width="55" Margin="5,0,30,10" FontSize="18" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Background="White" BorderBrush="#FFA014" Foreground="Black" Click="saveas_Click"/>
-        <Button Style="{DynamicResource ButtonStyle1}" Name="Open" Content="Open" HorizontalContentAlignment="Center" Margin="5,5,140,5" FontSize="18" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" Background="White" BorderBrush="White" Click="Open_Click"/>
+        <Button Style="{DynamicResource ButtonStyle1}" Name="createButton" Content="Create Report!" ToolTip="Create CDS Report" HorizontalContentAlignment="Center" FontSize="18" Grid.Row="0" Grid.Column="1" Margin="5,5,5,5" HorizontalAlignment="Right" Background="White" BorderBrush="White" Click="createButton_Click"/>
+        <Button Style="{DynamicResource ButtonStyle1}" Name="save" Content="save" ToolTip="save your inputs" HorizontalContentAlignment="Center" Width="60" Margin="0,0,15,10" FontSize="18" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Background="White" BorderBrush="#FFA014" Foreground="Black" Click="save_Click"/>
+        <Button Style="{DynamicResource ButtonStyle1}" Name="saveas" Content="saveas" ToolTip="saveas your inputs"  HorizontalContentAlignment="Center" Width="60" Margin="5,0,15,10" FontSize="18" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Background="White" BorderBrush="#FFA014" Foreground="Black" Click="saveas_Click"/>
+        <Button Style="{DynamicResource ButtonStyle1}" Name="Open" Content="Open" ToolTip="open input file" HorizontalContentAlignment="Center" Margin="5,5,140,5" FontSize="18" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" Background="White" BorderBrush="White" Click="Open_Click"/>
         <ScrollViewer Name="MyScrollViewer" Background="#FFFDFDFD" Grid.Row="1"  Grid.RowSpan="9" ScrollChanged="MyScrollViewer_ScrollChanged" Grid.Column="1" Grid.ColumnSpan="2">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="30" />
                     <ColumnDefinition Width="30" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="212*" />
+                    <ColumnDefinition Width="169*" />
+                    <ColumnDefinition Width="43*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="30" />
                     <RowDefinition Height="30" />
                     <RowDefinition Height="30" />
@@ -448,7 +449,7 @@
                     <RowDefinition Height="30" />
                     <RowDefinition Height="30" />
                     <RowDefinition Height="50" />
-                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="55" />
                     <RowDefinition Height="30" />
                     <RowDefinition Height="30" />
                     <RowDefinition Height="30" />
@@ -469,42 +470,44 @@
                     <RowDefinition Height="30" />
                     <RowDefinition Height="30" />
                 </Grid.RowDefinitions>
-                <Label Name="ReportDetails" Content="Report Details" Grid.Row="0" Grid.ColumnSpan="3" FontWeight="Bold" FontSize="18"/>
-                <Label Content="Project" Grid.Row="1" Grid.Column="0" FontWeight="Bold" FontSize="14"/>
+                <Label Name="ReportDetails" Content="Report Details" Grid.Row="0" Grid.ColumnSpan="4" FontWeight="Bold" FontSize="18" Margin="0,0,0,30" Grid.RowSpan="2"/>
+                <Image Name="directory" Grid.Column="4" Grid.Row="0" ToolTip="A folder is not currently selected; save as, open, or create report to select one" HorizontalAlignment="Left" Height="30" Margin="200,0,0,0" VerticalAlignment="Top" Width="30" Source="/directory_info.png" Grid.ColumnSpan="2" />
+
+                <Label Content="Project" Grid.Row="1" Grid.Column="0" FontWeight="Bold" FontSize="14" Grid.ColumnSpan="2" Margin="0,0,30,30" Grid.RowSpan="2"/>
                 <Button Name="box1" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="12" Height="12" Background="Red" BorderBrush="White"/>
-                <Label Name="name1" Content="Client Name" Grid.Row="1" Grid.Column="3" FontSize="14"/>
-                <ComboBox Style="{DynamicResource ComboBoxStyle1}" Name="select1" Grid.Row="1" Grid.Column="4" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Width="200" SelectionChanged="select1_SelectionChanged">
+                <Label Name="name1" Content="Client Name" Grid.Row="1" Grid.Column="3" FontSize="14" Margin="0,0,0,30" Grid.RowSpan="2"/>
+                <ComboBox Style="{DynamicResource ComboBoxStyle1}" Name="select1" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Left" Margin="212,0,0,0" VerticalAlignment="Top" Width="200" SelectionChanged="select1_SelectionChanged" Grid.ColumnSpan="3">
                     <ComboBoxItem IsSelected="True">-Select-</ComboBoxItem>
                     <ComboBoxItem>Cadent</ComboBoxItem>
                     <ComboBoxItem>National Grid</ComboBoxItem>
                     <ComboBoxItem>SGN</ComboBoxItem>
                 </ComboBox>
                 <Button Name="box2" Grid.Column="2" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Width="12" Height="12" Background="Red" BorderBrush="White"/>
-                <Label Name="name2" Content="Reason for Diversion" Grid.Row="2" Grid.Column="3" FontSize="14"/>
-                <ComboBox Style="{DynamicResource ComboBoxStyle1}" Name="select2" Grid.Row="2" Grid.Column="4" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Width="200" SelectionChanged="select2_SelectionChanged">
+                <Label Name="name2" Content="Reason for Diversion" Grid.Row="2" Grid.Column="3" FontSize="14" Margin="0,0,0,30" Grid.RowSpan="2"/>
+                <ComboBox Style="{DynamicResource ComboBoxStyle1}" Name="select2" Grid.Row="2" Grid.Column="3" HorizontalAlignment="Left" Margin="212,0,0,0" VerticalAlignment="Top" Width="200" SelectionChanged="select2_SelectionChanged" Grid.ColumnSpan="3">
                     <ComboBoxItem IsSelected="True">-Select-</ComboBoxItem>
                     <ComboBoxItem>Railway</ComboBoxItem>
                     <ComboBoxItem>Road</ComboBoxItem>
                     <ComboBoxItem>Building/s</ComboBoxItem>
                 </ComboBox>
                 <Button Name="box3" Grid.Column="2" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center" Width="12" Height="12" Background="Red" BorderBrush="White"/>
-                <Label Name="name3" Content="Project Name" Grid.Row="3" Grid.Column="3" FontSize="14"/>
-                <TextBox Style="{DynamicResource TextBoxStyle1}" Name="text3" ToolTip="e.g. HS2, Will appear in document title" SelectionBrush="#FFA014" Grid.Column="4" Grid.Row="3" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="200" TextChanged="text3_TextChanged"/>
+                <Label Name="name3" Content="Project Name" Grid.Row="3" Grid.Column="3" FontSize="14" Margin="0,0,0,30" Grid.RowSpan="2"/>
+                <TextBox Style="{DynamicResource TextBoxStyle1}" Name="text3" ToolTip="e.g. HS2, Will appear in document title" SelectionBrush="#FFA014" Grid.Column="3" Grid.Row="3" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="200" TextChanged="text3_TextChanged" Grid.ColumnSpan="3" Margin="212,0,0,0"/>
                 <Button Name="box4" Grid.Column="2" Grid.Row="4" HorizontalAlignment="Center" VerticalAlignment="Center" Width="12" Height="12" Background="Red" BorderBrush="White"/>
-                <Label Name="name4"  Content="Infrastructure Client/s" Grid.Row="4" Grid.Column="3" FontSize="14"/>
-                <TextBox Style="{DynamicResource TextBoxStyle1}" Name="text4" ToolTip="e.g. HS2, Will appear in document text" SelectionBrush="#FFA014" Grid.Column="4" Grid.Row="4" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="200" TextChanged="text4_TextChanged"/>
+                <Label Name="name4"  Content="Infrastructure Client/s" Grid.Row="4" Grid.Column="3" FontSize="14" Margin="0,0,0,30" Grid.RowSpan="2"/>
+                <TextBox Style="{DynamicResource TextBoxStyle1}" Name="text4" ToolTip="e.g. HS2, Will appear in document text" SelectionBrush="#FFA014" Grid.Column="3" Grid.Row="4" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="200" TextChanged="text4_TextChanged" Grid.ColumnSpan="3" Margin="212,0,0,0"/>
                 <Button Name="box5" Grid.Column="2" Grid.Row="5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="12" Height="12" Background="Red" BorderBrush="White"/>
-                <Label Name="name5" Content="Pipeline Name" Grid.Row="5" Grid.Column="3" FontSize="14"/>
-                <TextBox Style="{DynamicResource TextBoxStyle1}" Name="text5" ToolTip="e.g. Feeder 8 or Wraron to Renwral, Will appear in document title" SelectionBrush="#FFA014" Grid.Column="4" Grid.Row="5" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="200" TextChanged="text5_TextChanged" />
+                <Label Name="name5" Content="Pipeline Name" Grid.Row="5" Grid.Column="3" FontSize="14" Margin="0,0,0,30" Grid.RowSpan="2"/>
+                <TextBox Style="{DynamicResource TextBoxStyle1}" Name="text5" ToolTip="e.g. Feeder 8 or Wraron to Renwral, Will appear in document title" SelectionBrush="#FFA014" Grid.Column="3" Grid.Row="5" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="200" TextChanged="text5_TextChanged" Grid.ColumnSpan="3" Margin="212,0,0,0" />
                 <Button Name="box6" Grid.Column="2" Grid.Row="6" HorizontalAlignment="Center" VerticalAlignment="Center" Width="12" Height="12" Background="Red" BorderBrush="White"/>
-                <Label Name="name6" Content="Pipeline Number" Grid.Row="6" Grid.Column="3" FontSize="14"/>
-                <TextBox Style="{DynamicResource TextBoxStyle1}" Name="text6" ToolTip="e.g. Feeder 8 or 2647" SelectionBrush="#FFA014" Grid.Column="4" Grid.Row="6" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="200" TextChanged="text6_TextChanged"/>
+                <Label Name="name6" Content="Pipeline Number" Grid.Row="6" Grid.Column="3" FontSize="14" Margin="0,0,0,30" Grid.RowSpan="2"/>
+                <TextBox Style="{DynamicResource TextBoxStyle1}" Name="text6" ToolTip="e.g. Feeder 8 or 2647" SelectionBrush="#FFA014" Grid.Column="3" Grid.Row="6" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="200" TextChanged="text6_TextChanged" Grid.ColumnSpan="3" Margin="212,0,0,0"/>
                 <Button Name="box7" Grid.Column="2" Grid.Row="7" HorizontalAlignment="Center" VerticalAlignment="Center" Width="12" Height="12" Background="Red" BorderBrush="White"/>
-                <Label Name="name7" Content="Diversion" Grid.Row="7" Grid.Column="3" FontSize="14"/>
-                <TextBox Style="{DynamicResource TextBoxStyle1}" Name="text7" ToolTip="e.g. TX52 or HP49" SelectionBrush="#FFA014" Grid.Column="4" Grid.Row="7" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="200" TextChanged="text7_TextChanged"/>
+                <Label Name="name7" Content="Diversion" Grid.Row="7" Grid.Column="3" FontSize="14" Margin="0,0,0,30" Grid.RowSpan="2"/>
+                <TextBox Style="{DynamicResource TextBoxStyle1}" Name="text7" ToolTip="e.g. TX52 or HP49" SelectionBrush="#FFA014" Grid.Column="3" Grid.Row="7" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="200" TextChanged="text7_TextChanged" Grid.ColumnSpan="3" Margin="212,0,0,0"/>
                 <Button Name="box8" Grid.Column="2" Grid.Row="8" HorizontalAlignment="Center" VerticalAlignment="Center" Width="12" Height="12" Background="Red" BorderBrush="White"/>
-                <Label Name="name8" Content="Bore Size" Grid.Row="8" Grid.Column="3" FontSize="14"/>
-                <ComboBox Style="{DynamicResource ComboBoxStyle1}" Name="select8" Grid.Row="8" Grid.Column="4" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Width="200" SelectionChanged="select8_SelectionChanged">
+                <Label Name="name8" Content="Bore Size" Grid.Row="8" Grid.Column="3" FontSize="14" Margin="0,0,0,50" Grid.RowSpan="2"/>
+                <ComboBox Style="{DynamicResource ComboBoxStyle1}" Name="select8" Grid.Row="8" Grid.Column="3" HorizontalAlignment="Left" Margin="212,0,0,0" VerticalAlignment="Top" Width="200" SelectionChanged="select8_SelectionChanged" Grid.ColumnSpan="3">
                     <ComboBoxItem IsSelected="True">-Select-</ComboBoxItem>
                     <ComboBoxItem>300</ComboBoxItem>
                     <ComboBoxItem>400</ComboBoxItem>
@@ -514,35 +517,50 @@
                     <ComboBoxItem>800</ComboBoxItem>
                     <ComboBoxItem>900</ComboBoxItem>
                 </ComboBox>
-                <Label Content="Internal" Margin="0,20,0,0" Grid.Row="9" Grid.Column="0" FontWeight="Bold" FontSize="14"/>
-                <Button Name="box9" Margin="0,20,0,0" Grid.Column="2" Grid.Row="9" HorizontalAlignment="Center" VerticalAlignment="Center" Width="12" Height="12" Background="Red" BorderBrush="White"/>
-                <Label Name="name9" Margin="0,20,0,0" Content="Project Code" Grid.Row="9" Grid.Column="3" FontSize="14"/>
-                <TextBox Style="{DynamicResource TextBoxStyle1}" Margin="0,20,0,0" Name="text9" ToolTip="e.g. B2150083" SelectionBrush="#FFA014" Grid.Column="4" Grid.Row="9" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="200" TextChanged="text9_TextChanged"/>
-                <Button Name="box10" Grid.Column="2" Grid.Row="10" HorizontalAlignment="Center" VerticalAlignment="Center" Width="12" Height="12" Background="Red" BorderBrush="White"/>
-                <Label Name="name10" Content="Author" Grid.Row="10" Grid.Column="3" FontSize="14"/>
-                <TextBox Style="{DynamicResource TextBoxStyle1}" Name="text10" ToolTip="Your name." SelectionBrush="#FFA014" Grid.Column="4" Grid.Row="10" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="200" TextChanged="text10_TextChanged" />
-                <Button Name="box11" Grid.Column="2" Grid.Row="11" HorizontalAlignment="Center" VerticalAlignment="Center" Width="12" Height="12" Background="Red" BorderBrush="White"/>
-                <Label Name="name11" Content="Project Manager" Grid.Row="11" Grid.Column="3" FontSize="14"/>
-                <TextBox Style="{DynamicResource TextBoxStyle1}" Name="text11" ToolTip="Project Manager's name." SelectionBrush="#FFA014" Grid.Column="4" Grid.Row="11" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="200" TextChanged="text11_TextChanged" />
-                <Button Name="box12" Grid.Column="2" Grid.Row="12" HorizontalAlignment="Center" VerticalAlignment="Center" Width="12" Height="12" Background="Red" BorderBrush="White"/>
-                <Label Name="name12" Content="Checker" Grid.Row="12" Grid.Column="3" FontSize="14"/>
-                <TextBox Style="{DynamicResource TextBoxStyle1}" Name="text12" ToolTip="Checker name." SelectionBrush="#FFA014" Grid.Column="4" Grid.Row="12" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="200" TextChanged="text12_TextChanged" />
-                <Button Name="box13" Grid.Column="2" Grid.Row="13" HorizontalAlignment="Center" VerticalAlignment="Center" Width="12" Height="12" Background="Red" BorderBrush="White"/>
-                <Label Name="name13" Content="Reviewer" Grid.Row="13" Grid.Column="3" FontSize="14"/>
-                <TextBox Style="{DynamicResource TextBoxStyle1}" Name="text13" ToolTip="Reviewer name." SelectionBrush="#FFA014" Grid.Column="4" Grid.Row="13" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="200" TextChanged="text13_TextChanged" />
-                <Button Name="box14" Grid.Column="2" Grid.Row="14" HorizontalAlignment="Center" VerticalAlignment="Center" Width="12" Height="12" Background="Red" BorderBrush="White"/>
-                <Label Name="name14" Content="Approver" Grid.Row="14" Grid.Column="3" FontSize="14"/>
-                <TextBox Style="{DynamicResource TextBoxStyle1}" Name="text14" ToolTip="Approver name." SelectionBrush="#FFA014" Grid.Column="4" Grid.Row="14" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="200" TextChanged="text14_TextChanged" />
-                <Label Content="Deadline" Margin="0,20,0,0" Grid.Row="15" Grid.Column="0" FontWeight="Bold" FontSize="14"/>
-                <Button Name="box15" Margin="0,20,0,0" Grid.Column="2" Grid.Row="15" HorizontalAlignment="Center" VerticalAlignment="Center" Width="12" Height="12" Background="Red" BorderBrush="White"/>
-                <Label Name="name15" Margin="0,20,0,0" Content="Submission Date" Grid.Row="15" Grid.Column="3" FontSize="14"/>
-                <DatePicker Name="date15" Margin="0,20,0,0" Grid.Column="4" Grid.Row="15" HorizontalAlignment="Left" Width="200" VerticalAlignment="Top" SelectedDateChanged="date15_SelectedDateChanged"/>
-                <Image Grid.Row="12" Grid.RowSpan="5" Grid.Column="4" HorizontalAlignment="Center" Height="130" VerticalAlignment="Center" Width="171" Source="/orangeInfo.png"/>
 
-                <Label Content="Pipeline History" Grid.Row="16" Grid.ColumnSpan="3" FontWeight="Bold" FontSize="18"/>
-                <Label Content="Audit Report" Grid.Row="17" Grid.Column="0" FontWeight="Bold" FontSize="14"/>
-                <Label Content="Pressures" Grid.Row="19" Grid.Column="0" FontWeight="Bold" FontSize="14"/>
-                <Label Content="Materal" Grid.Row="23" Grid.Column="0" FontWeight="Bold" FontSize="14"/>
+                <Label Content="Internal" Margin="0,20,30,30" Grid.Row="9" Grid.Column="0" FontWeight="Bold" FontSize="14" Grid.ColumnSpan="2" Grid.RowSpan="2"/>
+                <Button Name="box9" Margin="0,29,0,0" Grid.Column="2" Grid.Row="9" HorizontalAlignment="Center" VerticalAlignment="Top" Width="12" Height="12" Background="Red" BorderBrush="White"/>
+                <Label Name="name9" Margin="0,20,0,30" Content="Project Code" Grid.Row="9" Grid.Column="3" FontSize="14" Grid.RowSpan="2"/>
+                <TextBox Style="{DynamicResource TextBoxStyle1}" Margin="212,23,0,0" Name="text9" ToolTip="e.g. B2150083" SelectionBrush="#FFA014" Grid.Column="3" Grid.Row="9" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Width="200" TextChanged="text9_TextChanged" Grid.ColumnSpan="3"/>
+                <Button Name="box10" Grid.Column="2" Grid.Row="10" HorizontalAlignment="Center" VerticalAlignment="Center" Width="12" Height="12" Background="Red" BorderBrush="White"/>
+                <Label Name="name10" Content="Author" Grid.Row="10" Grid.Column="3" FontSize="14" Margin="0,0,0,30" Grid.RowSpan="2"/>
+                <TextBox Style="{DynamicResource TextBoxStyle1}" Name="text10" ToolTip="Your name." SelectionBrush="#FFA014" Grid.Column="3" Grid.Row="10" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="200" TextChanged="text10_TextChanged" Grid.ColumnSpan="3" Margin="212,0,0,0" />
+                <Button Name="box11" Grid.Column="2" Grid.Row="11" HorizontalAlignment="Center" VerticalAlignment="Center" Width="12" Height="12" Background="Red" BorderBrush="White"/>
+                <Label Name="name11" Content="Project Manager" Grid.Row="11" Grid.Column="3" FontSize="14" Margin="0,0,0,30" Grid.RowSpan="2"/>
+                <TextBox Style="{DynamicResource TextBoxStyle1}" Name="text11" ToolTip="Project Manager's name." SelectionBrush="#FFA014" Grid.Column="3" Grid.Row="11" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="200" TextChanged="text11_TextChanged" Grid.ColumnSpan="3" Margin="212,0,0,0" />
+                <Button Name="box12" Grid.Column="2" Grid.Row="12" HorizontalAlignment="Center" VerticalAlignment="Center" Width="12" Height="12" Background="Red" BorderBrush="White"/>
+                <Label Name="name12" Content="Checker" Grid.Row="12" Grid.Column="3" FontSize="14" Margin="0,0,0,30" Grid.RowSpan="2"/>
+                <TextBox Style="{DynamicResource TextBoxStyle1}" Name="text12" ToolTip="Checker name." SelectionBrush="#FFA014" Grid.Column="3" Grid.Row="12" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="200" TextChanged="text12_TextChanged" Grid.ColumnSpan="3" Margin="212,0,0,0" />
+                <Button Name="box13" Grid.Column="2" Grid.Row="13" HorizontalAlignment="Center" VerticalAlignment="Center" Width="12" Height="12" Background="Red" BorderBrush="White"/>
+                <Label Name="name13" Content="Reviewer" Grid.Row="13" Grid.Column="3" FontSize="14" Margin="0,0,0,30" Grid.RowSpan="2"/>
+                <TextBox Style="{DynamicResource TextBoxStyle1}" Name="text13" ToolTip="Reviewer name." SelectionBrush="#FFA014" Grid.Column="3" Grid.Row="13" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="200" TextChanged="text13_TextChanged" Grid.ColumnSpan="3" Margin="212,0,0,0" />
+                <Button Name="box14" Grid.Column="2" Grid.Row="14" HorizontalAlignment="Center" VerticalAlignment="Center" Width="12" Height="12" Background="Red" BorderBrush="White"/>
+                <Label Name="name14" Content="Approver" Grid.Row="14" Grid.Column="3" FontSize="14" Margin="0,0,0,50" Grid.RowSpan="2"/>
+                <TextBox Style="{DynamicResource TextBoxStyle1}" Name="text14" ToolTip="Approver name." SelectionBrush="#FFA014" Grid.Column="3" Grid.Row="14" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="200" TextChanged="text14_TextChanged" Grid.ColumnSpan="3" Margin="212,0,0,0" />
+
+                <Label Content="Deadline" Margin="0,20,30,55" Grid.Row="15" Grid.Column="0" FontWeight="Bold" FontSize="14" Grid.ColumnSpan="2" Grid.RowSpan="2"/>
+                <Button Name="box15" Margin="0,29,0,0" Grid.Column="2" Grid.Row="15" HorizontalAlignment="Center" VerticalAlignment="Top" Width="12" Height="12" Background="Red" BorderBrush="White"/>
+                <Label Name="name15" Margin="0,20,0,55" Content="Submission Date" Grid.Row="15" Grid.Column="3" FontSize="14" Grid.RowSpan="2"/>
+                <DatePicker Name="date15" Margin="212,20,0,0" Grid.Column="3" Grid.Row="15" HorizontalAlignment="Left" Width="200" VerticalAlignment="Top" SelectedDateChanged="date15_SelectedDateChanged" Grid.ColumnSpan="3"/>
+
+                <Image Grid.Row="11" Grid.RowSpan="5" Grid.Column="4" HorizontalAlignment="Center" Height="130" VerticalAlignment="Center" Width="171" Source="/orangeInfo.png" Grid.ColumnSpan="2" Margin="21,0,0,0"/>
+
+                <Label Content="Pipeline History" Margin="0,20,0,30" Grid.Row="16" Grid.ColumnSpan="4" FontWeight="Bold" FontSize="18" Grid.RowSpan="2"/>
+
+                <Label Content="TD/1 Audit Report" Grid.Row="17" Grid.Column="0" FontWeight="Bold" FontSize="14" Grid.ColumnSpan="2" Margin="0,0,0,30" Grid.RowSpan="2"/>
+                <Button Name="box17" Grid.Column="2" Grid.Row="17" HorizontalAlignment="Center" VerticalAlignment="Center" Width="12" Height="12" Background="Red" BorderBrush="White"/>
+                <Label Name="name17" Content="Report Number" Grid.Row="17" Grid.Column="3" FontSize="14" Margin="0,0,0,30" Grid.RowSpan="2"/>
+                <TextBox Style="{DynamicResource TextBoxStyle1}" Name="text17" ToolTip="Found on cover page of TD/1 Audit Report." SelectionBrush="#FFA014" Grid.Column="3" Grid.Row="17" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="200" TextChanged="text17_TextChanged" Grid.ColumnSpan="3" Margin="212,0,0,0" />
+                <Button Name="box18" Grid.Column="2" Grid.Row="18" HorizontalAlignment="Center" VerticalAlignment="Center" Width="12" Height="12" Background="Red" BorderBrush="White"/>
+                <Label Name="name18" Content="Submission Date" Grid.Row="18" Grid.Column="3" FontSize="14" Margin="0,0,0,30" Grid.RowSpan="2"/>
+                <DatePicker Name="date18" Grid.Column="3" Grid.Row="18" HorizontalAlignment="Left" Width="200" VerticalAlignment="Center" SelectedDateChanged="date18_SelectedDateChanged" Grid.ColumnSpan="3" Margin="212,0,0,0"/>
+                <Button Name="box19" Grid.Column="2" Grid.Row="19" HorizontalAlignment="Center" VerticalAlignment="Center" Width="12" Height="12" Background="Red" BorderBrush="White"/>
+                <Label Name="name19" Content="Issued by" Grid.Row="19" Grid.Column="3" FontSize="14" Margin="0,0,0,30" Grid.RowSpan="2"/>
+                <TextBox Style="{DynamicResource TextBoxStyle1}" Name="text19" ToolTip="Found on cover page of TD/1 Audit Report." SelectionBrush="#FFA014" Grid.Column="3" Grid.Row="19" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="200" TextChanged="text19_TextChanged" Grid.ColumnSpan="3" Margin="212,0,0,0" />
+
+                <Label Content="Pressures" Grid.Row="21" Grid.Column="0" FontWeight="Bold" FontSize="14" Grid.ColumnSpan="2" Margin="0,0,30,30" Grid.RowSpan="2"/>
+
+                <Label Content="Materal" Grid.Row="25" Grid.Column="0" FontWeight="Bold" FontSize="14" Grid.ColumnSpan="2" Margin="0,0,30,30" Grid.RowSpan="2"/>
 
 
             </Grid>
