@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.Win32;
 using System.Windows;
 using System.Windows.Controls;
@@ -8,6 +8,7 @@ using Excel = Microsoft.Office.Interop.Excel;
 using System.Reflection;
 using System.IO;
 using System.Runtime.InteropServices;
+
 
 namespace test
 {
@@ -60,14 +61,14 @@ namespace test
 
             // Checks how many properties there are in the app (numberOfProperties)
             int numberOfProperties = 1;
-            while (FindName($"name{numberOfProperties}") != null)
+            while (FindName($"name{numberOfProperties}") != null | numberOfProperties == 16)
             { numberOfProperties = numberOfProperties + 1; }
             numberOfProperties = numberOfProperties - 1; // !! !! not writing all the properties propertly (misses out client)
 
             // Column for property name
-            string[] propertyName = new string[numberOfProperties + 2]; // string containing perameter names (defined by label content)
+            string[] propertyName = new string[numberOfProperties + 3]; // string containing perameter names (defined by label content)
             // Column for property value
-            string[] propertyValue = new string[numberOfProperties + 2]; // string containing values inputed by user (defined by textbox/ combobox)
+            string[] propertyValue = new string[numberOfProperties + 3]; // string containing values inputed by user (defined by textbox/ combobox)
             int i = 1;
 
             propertyName[0] = "// List of the report's Custom Properties and their entered values";
@@ -80,32 +81,36 @@ namespace test
             //while (FindName($"name{i}") != null)
                 while (i <= numberOfProperties)
             {
-                Label lb = FindName($"name{i}") as Label;
-                propertyName[i+2] = (string)lb.Content;
-                object isTextBox = FindName($"text{i}"); // !! !! problem here
-                object isComboBox = FindName($"select{i}");
-                object isDatePicker = FindName($"date{i}");
-                if (isTextBox != null)
+                if (i != 16)
                 {
-                    TextBox tb = FindName($"text{i}") as TextBox;
-                    if (tb.Text != "")
-                        propertyValue[i+2] = tb.Text;
-                    else { propertyValue[i+2] = "-empty-"; }
+                    Label lb = FindName($"name{i}") as Label;
+                    propertyName[i+2] = (string)lb.Content;
+                    object isTextBox = FindName($"text{i}"); // !! !! problem here
+                    object isComboBox = FindName($"select{i}");
+                    object isDatePicker = FindName($"date{i}");
+                    if (isTextBox != null)
+                    {
+                        TextBox tb = FindName($"text{i}") as TextBox;
+                        if (tb.Text != "")
+                            propertyValue[i+2] = tb.Text;
+                        else { propertyValue[i+2] = "-empty-"; }
+                    }
+                    else if (isComboBox != null)
+                    {
+                        ComboBox cb = FindName($"select{i}") as ComboBox;
+                        if (cb.Text != "")
+                            propertyValue[i + 2] = cb.Text;
+                        else { propertyValue[i + 2] = "-empty-"; }
+                    }
+                    else if (isDatePicker != null)
+                    {
+                        DatePicker dp = FindName($"date{i}") as DatePicker;
+                        if (dp.SelectedDate.ToString() != "")
+                            propertyValue[i + 2] = dp.SelectedDate.ToString();
+                        else { propertyValue[i + 2] = "-empty-"; }
+                    } 
                 }
-                else if (isComboBox != null)
-                {
-                    ComboBox cb = FindName($"select{i}") as ComboBox;
-                    if (cb.Text != "")
-                        propertyValue[i + 2] = cb.Text;
-                    else { propertyValue[i + 2] = "-empty-"; }
-                }
-                else if (isDatePicker != null)
-                {
-                    DatePicker dp = FindName($"date{i}") as DatePicker;
-                    if (dp.SelectedDate.ToString() != "")
-                        propertyValue[i + 2] = dp.SelectedDate.ToString();
-                    else { propertyValue[i + 2] = "-empty-"; }
-                }
+                
                 i++;
             }
 
@@ -139,7 +144,7 @@ namespace test
 
 
                 string line3 = txtFileArray[3];
-                directory.ToolTip = propertiesFilePath + " &#x0a; " + line3.Substring(5); 
+                directory.ToolTip = propertiesFilePath + " &#x0a; " + line3.Substring(5); // !! fix this error when opening
 
                 outputPropertyArray = propertiesArray;
                 return outputPropertyArray;
@@ -165,8 +170,9 @@ namespace test
             }
 
 
-            for (int i = 3; i < propertiesArray.Length; i = i + 2)
+            for (int i = 0; i < propertiesArray.Length; i = i + 2)
             {
+                if ((i + 2) / 2 == 16) { i = i + 2; }
                 int n = (i + 2) / 2;
                 if (FindName($"select{n}") != null)
                 {
@@ -185,7 +191,12 @@ namespace test
                 {
                     DatePicker dp = FindName($"date{n}") as DatePicker;
                     if (propertiesArray[i + 1] != "-empty-")
-                    { dp.SelectedDate = Convert.ToDateTime(propertiesArray[i + 1]); } // add code to say 'select a date' if date property value (newWords[i + 1]) = "-empty-"
+                    { dp.SelectedDate = Convert.ToDateTime(propertiesArray[i + 1]); } // !! add code to say 'select a date' if date property value (newWords[i + 1]) = "-empty-"
+                    else 
+                    { 
+                        dp.SelectedDate = null;
+                        boxColor(dp);
+                    }
                 }
             }
 
@@ -736,7 +747,11 @@ namespace test
                     }
                     else if (sender is DatePicker)
                     {
-                        bt.Background = new SolidColorBrush(Colors.Green);
+                        DatePicker dp = FindName($"date{m}{n}") as DatePicker;
+                        if (dp.SelectedDate == null)
+                        { bt.Background = new SolidColorBrush(Colors.Red); }
+                        else
+                        { bt.Background = new SolidColorBrush(Colors.Green); }
                     }
                 }
                 else
