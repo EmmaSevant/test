@@ -16,22 +16,32 @@ namespace test
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     /// 
-
-
     /*
+    
     AUTHOR: Emma Sevant (emma.sevant@jacobs.com)
 
-
-       !!      :  Pending Code Changes
+    KEY:
+     !!        :  Pending Code Changes
      // OLD    :  Old line of code, should be deleted once new code functions 
 
+<<<<<<< HEAD
+    SUMMARY:
+    This script gives the application it's functionality, it is written in C#. 
+    
+    The user can input properties in each textbox/ drop down/ date selector. These properties can be 
+    saved so that the user can fill in the properties in stages. The properties are stored in a .txt 
+    file which is automatically generated and named 'BXXXXXXX-XXXX-Options (DD/MM/YY/).txt' where 
+    BXXXXXXX is the project code, XXXX is the diversion number, and the date is the date when the 
+    file is generated. This file is updated when the user saves. The report will be generated in the 
+    same folder as this file.
+=======
     User Enters Properties.
     -> boxColor() changes the boxes on each row from red to green when they are populated
 
     Save/ saveas buttons.
     -> this writes each property into a txt file which is named and saved in a chosen folder by the user
 
-    Open button.   
+    Open button.
     -> User selcts a txt file 
     -> Parameters are read from txt file then atomatiaclly populated
     -> This also changes the file path in directory.ToolTip
@@ -43,14 +53,21 @@ namespace test
     -> !! should propmt the user to save before closing if they havn't saved 
 
 
+>>>>>>> parent of 40739c0 (Practice Commit)
 
+    When the user is ready, they can click on the create report button. This copys the report 
+    template to the same folder as the properties file and names it 'BXXXXXXX-XXXX-1001_A (DD/MM/YY/)'. 
+    The application will save the name of this report to the .txt file so that it can be updated. The 
+    selected properties are then populated throught the report using word's custom properties function.
+    
     */
 
     public partial class MainWindow : Window
     {
         public MainWindow()
         {
-            InitializeComponent();
+            InitializeComponent(); 
+            save.BorderBrush = new SolidColorBrush(Colors.Orange);
         }
 
 
@@ -63,29 +80,27 @@ namespace test
             int numberOfProperties = 1;
             while (FindName($"name{numberOfProperties}") != null | numberOfProperties == 16)
             { numberOfProperties = numberOfProperties + 1; }
-            numberOfProperties = numberOfProperties - 1; // !! !! not writing all the properties propertly (misses out client)
+            numberOfProperties = numberOfProperties - 1;
 
-            // Column for property name
-            string[] propertyName = new string[numberOfProperties + 3]; // string containing perameter names (defined by label content)
-            // Column for property value
-            string[] propertyValue = new string[numberOfProperties + 3]; // string containing values inputed by user (defined by textbox/ combobox)
-            int i = 1;
-
+            // Column for property name(defined by label content)
+            string[] propertyName = new string[numberOfProperties + 3];
+            // Column for property value(defined by textbox/ combobox/ datepicker values)
+            string[] propertyValue = new string[numberOfProperties + 3]; 
+            
             propertyName[0] = "// List of the report's Custom Properties and their entered values";
-            if (associatedReportFilePath == null)
+            if (associatedReportFilePath == null) 
             { propertyName[1] = "// - No Report Linked";}
             else
             { propertyName[1] = "// - " + associatedReportFilePath; }
 
-            //Label test = FindName($"name{1}") as Label;
-            //while (FindName($"name{i}") != null)
-                while (i <= numberOfProperties)
+            int i = 1;
+            while (i <= numberOfProperties)
             {
                 if (i != 16)
                 {
                     Label lb = FindName($"name{i}") as Label;
                     propertyName[i+2] = (string)lb.Content;
-                    object isTextBox = FindName($"text{i}"); // !! !! problem here
+                    object isTextBox = FindName($"text{i}");
                     object isComboBox = FindName($"select{i}");
                     object isDatePicker = FindName($"date{i}");
                     if (isTextBox != null)
@@ -133,9 +148,7 @@ namespace test
                 // split up the string into an array (-> txtFileMessyArray) and delete un-necessary rows (-> txtFileArray)
                 string[] txtFileArray = txtFileString.Split('\t', '\n', '\r');
                 string[] propertiesArray = new string[txtFileArray.Length];
-
                 
-
                 // Exclude empty cells
                 var ii = 0; // propertiesArray index
                 for (int i = 9; i < txtFileArray.Length; i++)
@@ -144,16 +157,21 @@ namespace test
 
 
                 string line3 = txtFileArray[3];
-                directory.ToolTip = propertiesFilePath + " &#x0a; " + line3.Substring(5); // !! fix this error when opening
-
+                directory.ToolTip = propertiesFilePath + "\n" + line3.Substring(5);
+                if (line3.Contains("No Report Linked") == false)
+                {
+                    createButton.Content = "Update Report!";
+                    createButton.ToolTip = "Update CDS Report";
+                }
                 outputPropertyArray = propertiesArray;
                 return outputPropertyArray;
             }
             else 
-            {   
+            {
+                MessageBox.Show("Wrong txt file type\nFile should be in the format: BXXXXXXX-XXXX-Options (DD/MM/YY).txt");
+                directory.ToolTip = "A folder is not currently selected; save as, open, or create report to select one";
                 string[] emptyPropertiesArray = new string[] { null };
-                outputPropertyArray = emptyPropertiesArray;
-                return outputPropertyArray;
+                return outputPropertyArray = emptyPropertiesArray;
             }
             
         }
@@ -162,47 +180,44 @@ namespace test
             string[] propertiesArray;
             sortPropertiesTxtFile(propertiesFilePath, out propertiesArray);
 
-            if (propertiesArray[0] == null) // if sortPropertiesTxtFile outputs propertiesArray containning null (because the txt wasnt the correct file type), exit unpack text
+            if (propertiesArray[0] != null) // Make sure correct file type was opened
             {
-                MessageBox.Show("Wrong txt file type");
-                directory.ToolTip = "A folder is not currently selected; save as, open, or create report to select one";
-                return;
-            }
-
-
-            for (int i = 0; i < propertiesArray.Length; i = i + 2)
-            {
-                if ((i + 2) / 2 == 16) { i = i + 2; }
-                int n = (i + 2) / 2;
-                if (FindName($"select{n}") != null)
+                for (int i = 0; i < propertiesArray.Length; i = i + 2)
                 {
-                    ComboBox tb = FindName($"select{n}") as ComboBox;
-                    tb.Text = propertiesArray[i + 1];
-                }
-                else if (FindName($"text{n}") != null)
-                {
-                    TextBox tb = FindName($"text{n}") as TextBox;
-                    if (propertiesArray[i + 1] != "-empty-")
-                    { tb.Text = propertiesArray[i + 1]; }
-                    else
-                    { tb.Text = ""; }
-                }
-                else if (FindName($"date{n}") != null)
-                {
-                    DatePicker dp = FindName($"date{n}") as DatePicker;
-                    if (propertiesArray[i + 1] != "-empty-")
-                    { dp.SelectedDate = Convert.ToDateTime(propertiesArray[i + 1]); } // !! add code to say 'select a date' if date property value (newWords[i + 1]) = "-empty-"
-                    else 
-                    { 
-                        dp.SelectedDate = null;
-                        boxColor(dp);
+                    if ((i + 2) / 2 == 16) { i = i + 2; }
+                    int n = (i + 2) / 2;
+                    if (FindName($"select{n}") != null)
+                    {
+                        ComboBox tb = FindName($"select{n}") as ComboBox;
+                        tb.Text = propertiesArray[i + 1];
+                    }
+                    else if (FindName($"text{n}") != null)
+                    {
+                        TextBox tb = FindName($"text{n}") as TextBox;
+                        if (propertiesArray[i + 1] != "-empty-")
+                        { tb.Text = propertiesArray[i + 1]; }
+                        else
+                        { tb.Text = ""; }
+                    }
+                    else if (FindName($"date{n}") != null)
+                    {
+                        DatePicker dp = FindName($"date{n}") as DatePicker;
+                        if (propertiesArray[i + 1] != "-empty-")
+                        { dp.SelectedDate = Convert.ToDateTime(propertiesArray[i + 1]); } 
+                        else
+                        {
+                            dp.SelectedDate = null;
+                            boxColor(dp);
+                        }
                     }
                 }
             }
-
         }
-        private bool emmasSaveas()
+        private bool saveasProperties()
         {
+            createButton.Content = "Create Report!";
+            createButton.ToolTip = "Create CDS Report";
+
             string date = DateTime.Now.ToString();
             date = date.Replace('/', '.');
             date = date.Remove(date.Length - 9, 9);
@@ -222,52 +237,66 @@ namespace test
             saveFileDialog.FilterIndex = 1;
             saveFileDialog.RestoreDirectory = true;
 
-            //try
-            //{
-                if (saveFileDialog.ShowDialog() == true)
-                {
-                    directory.ToolTip = saveFileDialog.FileName + " &#x0a; No Report Linked";
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                directory.ToolTip = saveFileDialog.FileName + "\nNo Report Linked";
 
-                    // Create txt file using inputValuesTxt function (defined above)
-                    packTxt("No Report Linked", saveFileDialog.FileName);
-                    MessageBox.Show("Options Saved-as!");
+                // Create txt file using inputValuesTxt function (defined above)
+                packTxt("No Report Linked", saveFileDialog.FileName);
+                save.BorderBrush = new SolidColorBrush(Colors.Orange);
+                MessageBox.Show("Options Saved-as!");
+                return true;
+            }
+            else
+            { MessageBox.Show("Could not save");  return false; }
+                
 
-                    // Call temporyFileNameStore function to store the file name so it can be retrieved later
-                    //temporyFileNameStore(saveFileDialog.FileName);
-                    return true;
-                }
-                else
-                {
-                    MessageBox.Show("Could not save");
-                    return false;
-                }
-            //}
-            //catch { MessageBox.Show("Couldnt save!" + "\n" + "Please connect to global protect"); return false; } 
-            
         }
-        private void emmasSave()
+        private void saveProperties()
         {
             try
             {
-                // Check if file already exists. If yes, overwirte it
+                string date = DateTime.Now.ToString();
+                date = date.Replace('/', '.');
+                date = date.Remove(date.Length - 9, 9);
+                string projNo;
+                string diversion;
+                if (text9.Text != "") { projNo = text9.Text; }
+                else { projNo = "BXXXXXXX"; } // !! add a check for length of project no
+                if (text7.Text != "") { diversion = text7.Text; }
+                else { diversion = "XXXX"; }
+                string updatedFileName = projNo + "-" + diversion + "-Options (" + date + ").txt";
+
                 string directoryString = (string)directory.ToolTip;
-                string divider = " &#x0a; ";
+                string divider = "\n";
                 string propertiesFilePath;
                 string reportFilePath;
-                if (directoryString.Contains(divider))
+                propertiesFilePath = directoryString.Substring(0, directoryString.IndexOf(divider));
+                reportFilePath = directoryString.Substring(directoryString.IndexOf(divider) + divider.Length);
+                
+                if (directoryString.Contains("A properties file is not currently selected"))
+                { saveasProperties(); }
+                else 
                 {
-                    propertiesFilePath = directoryString.Substring(0, directoryString.IndexOf(divider));
-                    reportFilePath = directoryString.Substring(directoryString.IndexOf(divider) + divider.Length);
-                    //}
-                    //else { propertiesFilePath = directoryString; }
-
-                    if (File.Exists(propertiesFilePath))  // !! add if report file existes
+                    string propertiesFileName = propertiesFilePath.Substring(propertiesFilePath.Length - 38);
+                    string propertiesFolder = propertiesFilePath.Substring(0, propertiesFilePath.Length - 38);
+                    if (updatedFileName != propertiesFileName)
                     {
-                        packTxt(reportFilePath, propertiesFilePath); // !! change null to directory.ToolTip line 2 (after &#x0a;) ("no report linked")  
+                        System.IO.File.Move(propertiesFolder + propertiesFileName, propertiesFolder + updatedFileName);
+                        directory.ToolTip = propertiesFolder + updatedFileName + "\n" + reportFilePath;
+                        propertiesFilePath = propertiesFolder + updatedFileName;
+                    }
+
+                    // Check if file already exists. If yes, overwirte it
+                    if (File.Exists(propertiesFilePath))
+                    {
+                        packTxt(reportFilePath, propertiesFilePath);
+                        save.BorderBrush = new SolidColorBrush(Colors.Orange);
+
                         MessageBox.Show("Options Saved!");
                     }
+                    else { MessageBox.Show("Properites file path doesn't exist!\nCould'nt save file"); }
                 }
-                else { emmasSaveas(); }
             }
             catch (Exception Ex)
             {
@@ -276,11 +305,9 @@ namespace test
 
         }
         private void save_Click(object sender, RoutedEventArgs e)
-        {  emmasSave(); }
+        { saveProperties(); }
         private void saveas_Click(object sender, RoutedEventArgs e)
-        {
-            emmasSaveas();
-        }
+        { saveasProperties(); }
         private void Open_Click(object sender, RoutedEventArgs e)
         {
             // need to prompt user to open file then save file location to directory icon ToolTip
@@ -291,68 +318,84 @@ namespace test
             {
                 if (openFileDialog.ShowDialog() == true)
                 {
-                    // save file location
-                    //directory.ToolTip = openFileDialog.FileName;
-                    createButton.Content = "Update Report!";
-                    createButton.ToolTip = "Update CDS Report";
-                    // Call unpackTxt function to read txt file and add values to the 
                     unpackTxt(openFileDialog.FileName);
                 }
             }
-            catch { MessageBox.Show("Couldnt save!" + "\n" + "Please connect to global protect"); }
+            catch { MessageBox.Show("Couldnt open!" + "\n" + "Please connect to global protect"); }
             
         }
         private void Window_Closed(object sender, EventArgs e) 
         {
-            // !! add would you like to save? option. But how do we know they've not saved?
-            //yes no message box
-                //var result = MessageBox.Show("Close Document without saving?" + Environment.NewLine + "(Doc must be closed to update)", "Close Document",
-            //                 MessageBoxButton.YesNo); // !! add code to save current document before updating
-
-            //if (result == MessageBoxResult.Yes)
-            //{.....
+            if (((SolidColorBrush)save.BorderBrush).Color == Colors.Red)
+            {
+                if (MessageBox.Show("Options Not Saved. \nDo you want to save before closing?",
+                                      "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                { saveProperties(); }
+            }
         }
 
 
         // Update report
         private void createButton_Click(object sender, RoutedEventArgs e)
         {
-            // !! update to add report file path to txt
-            String reportFilePath = @"\\GBBHM1-FIL003\Admin\Gas\03 Software\Report Automation App\CDS_Blank.docx";
-            
-            if ((string)directory.ToolTip != "A folder is not currently selected; save as, open, or create report to select one")
-            { emmasSave(); }
-            else 
-            { 
-                if (emmasSaveas() == false)
-                    { MessageBox.Show("Options weren't saved, report could not be created"); return; }
-            } 
+            saveProperties();
+            String templateReportFilePath = @"\\GBBHM1-FIL003\Admin\Gas\03 Software\Report Automation App\CDS_Blank.docx";
 
-            MessageBox.Show("This may take a minute, message box will pop up when done"); // !! change to loading message
-
-            // !! not needed as file locatio will be in txt
             // To copy a file to another location and
             // overwrite the destination file if it already exists.
-            string txtFilePath = (string)directory.ToolTip;
-            string newReportFolder = txtFilePath.Remove(txtFilePath.Length - 38, 38);
-            string date = DateTime.Now.ToString();
-            date = date.Replace('/', '.');
-            date = date.Remove(date.Length - 9, 9);
-            string projNo;
-            string diversion;
-            if (text9.Text != "") { projNo = text9.Text; }
-            else { projNo = "BXXXXXXX"; }
-            if (text7.Text != "") { diversion = text7.Text; } // !! if text7.text or text9.text changed since last save, change the report and txt file names
-            else { diversion = "XXXX"; }
-            string reportFileName = projNo + "-" + diversion + "-1001_A (" + date + ")";
-            string newReportFilePath = newReportFolder + "\\" + reportFileName + ".docx";
-            if (File.Exists(newReportFilePath) == false) // !! if txt line 2 == "no report linked"
-            {
-                System.IO.File.Copy(reportFilePath, newReportFilePath, true); 
-            }
 
+            string directoryString = (string)directory.ToolTip;
+            string txtFilePath = directoryString.Substring(0, directoryString.IndexOf("\n"));
+
+            string reportFilePath = directoryString.Substring(directoryString.IndexOf("\n") + 1);
+            if (reportFilePath.Contains("No Report Linked"))
+            {
+                string newReportFolder = txtFilePath.Remove(txtFilePath.Length - 38, 38);
+                string date = DateTime.Now.ToString();
+                date = date.Replace('/', '.');
+                date = date.Remove(date.Length - 9, 9);
+                string projNo;
+                string diversion;
+                if (text9.Text != "") { projNo = text9.Text; }
+                else { projNo = "BXXXXXXX"; }
+                if (text7.Text != "") { diversion = text7.Text; } 
+                else { diversion = "XXXX"; }
+                string reportFileName = projNo + "-" + diversion + "-1001_A (" + date + ")";
+                reportFilePath = newReportFolder + "\\" + reportFileName + ".docx";
+
+                if (File.Exists(reportFilePath) == false)
+                {
+                    directory.ToolTip = txtFilePath + "\n" + reportFilePath;
+                    saveProperties();
+                    System.IO.File.Copy(templateReportFilePath, reportFilePath, true);
+                }
+                else { MessageBox.Show(reportFilePath + " already exists!"); } 
+                MessageBox.Show("This may take a minute, message box will pop up when done"); // !! change to loading message
+            }
+            else
+            { 
+                if (File.Exists(reportFilePath) == false)
+                {
+                    MessageBox.Show("Report Name Changed!\nPlease select report");
+                    OpenFileDialog openFileDialog = new OpenFileDialog();
+                    openFileDialog.InitialDirectory = @"\\GBBHM1-FIL003\Projects\";
+                    openFileDialog.Filter = "Word Documents|*.docx";
+                    try
+                    {
+                        if (openFileDialog.ShowDialog() == true)
+                        {
+                            reportFilePath = openFileDialog.FileName;
+                            directory.ToolTip = txtFilePath + "\n" + openFileDialog.FileName;
+                            saveProperties();
+                        }
+                        else { MessageBox.Show("No file seleted!"); return; }
+                    }
+                    catch { MessageBox.Show("Couldnt open!" + "\n" + "Please connect to global protect"); }
+                }
+                MessageBox.Show("This may take a minute, message box will pop up when done"); // !! change to loading message
+            }
             // Update word document
-            try { updateDoc(newReportFilePath); } 
+            try { updateDoc(reportFilePath); } 
             finally { ReleaseComObjectsUsingGC(); }
 
             // Update excel documents
@@ -373,6 +416,31 @@ namespace test
                     }
                     else { wasOpen = false; }
 
+
+                    // Update name of report and properties (incase a different date or project no/ diversion number entered)
+                    string directoryString = (string)directory.ToolTip;
+                    string txtFilePath = directoryString.Substring(0, directoryString.IndexOf("\n"));
+
+                    string newReportFolder = txtFilePath.Remove(txtFilePath.Length - 38, 38);
+                    string date = DateTime.Now.ToString();
+                    date = date.Replace('/', '.');
+                    date = date.Remove(date.Length - 9, 9);
+                    string projNo;
+                    string diversion;
+                    if (text9.Text != "") { projNo = text9.Text; }
+                    else { projNo = "BXXXXXXX"; }
+                    if (text7.Text != "") { diversion = text7.Text; } 
+                    else { diversion = "XXXX"; }
+                    string updatedFileName = projNo + "-" + diversion + "-1001_A (" + date + ").docx";
+                    string reportFileName = reportFilePath.Substring(reportFilePath.Length - 38);
+
+                    if (updatedFileName != reportFileName)
+                    {
+                        reportFilePath = newReportFolder + updatedFileName;
+                        System.IO.File.Move(newReportFolder + reportFileName, reportFilePath);
+                        directory.ToolTip = txtFilePath + "\n" + reportFilePath;
+                        saveProperties();
+                    }
 
                     // Code from: https://social.msdn.microsoft.com/Forums/sqlserver/en-US/8dc4afdf-8d12-4b6e-8de8-fc990f39c8c1/creating-n-accessing-custombuiltin-document-properties?forum=worddev
 
@@ -395,7 +463,8 @@ namespace test
                     Type typeDocCustomProps = DocCustomProps.GetType();
 
                     // read input values file
-                    string propertiesTxtfileName = (string)directory.ToolTip;
+                    directoryString = (string)directory.ToolTip;
+                    string propertiesTxtfileName = directoryString.Substring(0, directoryString.IndexOf("\n"));
 
                     // Form txt properties file into an array
                     string[] custPropertyArray;
@@ -414,11 +483,11 @@ namespace test
 
                             try
                             {
-                            typeDocCustomProps.InvokeMember("Item",
-                                               BindingFlags.Default |
-                                               BindingFlags.SetProperty,
-                                               null, DocCustomProps,
-                                               new object[] { customProperty, customPropValue });
+                                typeDocCustomProps.InvokeMember("Item",
+                                                   BindingFlags.Default |
+                                                   BindingFlags.SetProperty,
+                                                   null, DocCustomProps,
+                                                   new object[] { customProperty, customPropValue });
                             }
                             catch { MessageBox.Show($"Custom property does not exist in word template for label: '{customProperty}'"); }
                         }
@@ -431,7 +500,7 @@ namespace test
                     //Save the document  
                     aDoc.Save();
 
-                    if (wasOpen == true) // !! only close if the file was closed when button was pressed
+                    if (wasOpen == true)
                     { wordApp.Visible = true; }
                     else
                     {
@@ -455,7 +524,6 @@ namespace test
                     }
 
                     MessageBox.Show("File Updated!");
-
                     return;
                 }
                 else { MessageBox.Show("Document doesnt exist!"); return; }
@@ -472,26 +540,22 @@ namespace test
             // Find the report from the users' open documents
             Word.Application app = (Word.Application)System.Runtime.InteropServices.Marshal.GetActiveObject("Word.Application");
             if (app == null)
-                return; // !! add catch here?
+            { MessageBox.Show("Couldn't Connect to Word."); return;}
 
-            string shortReportFilePath = reportFilePath.Substring(reportFilePath.Length - 71); // !! use last 71 characters of file names to identify this will change for different users :/
-            // loop through users' open documents
+            string shortReportFilePath = reportFilePath.Substring(reportFilePath.Length - 38);
+            // loop through users' open documents to find the correct one
             foreach (Word.Document d in app.Documents)
             {
-                // !! wont loop through all docs..... do you mean if multiple open?
-
-                // make sure file name is in the same format as "shortReportFilePath"
-                string shortFullName = d.FullName.Substring(d.FullName.Length - 71); // !! use last 71 characters of file names to identify this will change for different users :/
+                string shortFullName = d.FullName.Substring(d.FullName.Length - 38); 
                 shortFullName = shortFullName.Replace('/', '\\');
 
                 // if the document is the report, save it can close it
                 if (shortFullName.ToLower() == shortReportFilePath.ToLower())
                 {
-                    object saveOption = Word.WdSaveOptions.wdSaveChanges; // !! changed from wdDoNotSaveChanges
+                    object saveOption = Word.WdSaveOptions.wdSaveChanges; 
                     object originalFormat = Word.WdOriginalFormat.wdOriginalDocumentFormat;
                     object routeDocument = false;
-                    d.Close(ref saveOption, ref originalFormat, ref routeDocument); // !! closes all word documents instead of one
-                    //app.Quit();
+                    d.Close(ref saveOption, ref originalFormat, ref routeDocument); 
 
                     // make sure application and document COM objects are released
                     if (app != null)
@@ -616,7 +680,7 @@ namespace test
             needs to run a finalizer that actually fully removes the COM Object from memory.
             So, it is totally acceptable to see the following code in you COM add-in projects:
             */
-            GC.Collect();
+                GC.Collect();
             GC.WaitForPendingFinalizers();
             GC.Collect();
             GC.WaitForPendingFinalizers();
@@ -650,13 +714,14 @@ namespace test
         }
         private void boxColor(object sender)
         {
-            // !! add function to change the colour of the save/ saveas buttons if props changed but not saved (could use tooltips for save/saveas)
+            // Change the colour of the save button border when properties are changed (will revert to orange once saved)
+            save.BorderBrush = new SolidColorBrush(Colors.Red);
 
             // This function changes the relevent box from red to green when the user inputs data
-            
+
             // Sender is the object containing all the details about the...
             // TextBox/ ComboBox/ DatePicker that has been pressed
-            
+
             // Define if sender is TextBox/ ComboBox/ DatePicker, then find its' Name
             string selectName = "";
             if (sender is TextBox)
