@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:test"
         mc:Ignorable="d"
-        Title="CDS Report Automation" Height="450" Width="800" ResizeMode="NoResize" Closed="Window_Closed"
+        Title="CDS Report Automation" Height="450" Width="800" ResizeMode="NoResize" Closed="Window_Closed" 
     xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2" Icon="/Logo.PNG">
     <Window.Resources>
         <Style x:Key="FocusVisual">
@@ -13,7 +13,7 @@
                 <Setter.Value>
                     <ControlTemplate>
                         <Rectangle Margin="2" StrokeDashArray="1 2" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" SnapsToDevicePixels="true" StrokeThickness="1"/>
-                    </ControlTemplate>
+                    </ControlTemplate> 
                 </Setter.Value>
             </Setter>
         </Style>
@@ -482,7 +482,7 @@
                     <RowDefinition Height="50" /> <!--row 46-->
                 </Grid.RowDefinitions>
                 <Label Name="ReportDetails" Content="Report Details" Grid.Row="0" Grid.ColumnSpan="4" FontWeight="Bold" FontSize="18" Margin="0,0,0,0" Grid.RowSpan="2"/>
-                <Image Name="directory" Grid.Column="4" Grid.Row="0" ToolTip="A folder is not currently selected; save as, open, or create report to select one" HorizontalAlignment="Left" Height="30" Margin="200,0,0,0" VerticalAlignment="Center" Width="30" Source="/directory_info.png" Grid.ColumnSpan="2" />
+                <Image Name="directory" Grid.Column="4" Grid.Row="0" ToolTip="A properties file is not currently selected; &#x0a;save as, open, or create report to select one" HorizontalAlignment="Left" Height="30" Margin="200,0,0,0" VerticalAlignment="Top" Width="30" Source="/directory_info.png" Grid.ColumnSpan="2" />
 
                 <Label Content="Project" Grid.Row="1" Grid.Column="0" FontWeight="Bold" FontSize="14" Grid.ColumnSpan="2" Margin="0,0,30,0" Grid.RowSpan="2"/>
                     <Button Name="box1" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="12" Height="12" Background="Red" BorderBrush="White"/>
