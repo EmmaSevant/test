@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.Win32;
 using System.Windows;
 using System.Windows.Controls;
@@ -842,14 +842,68 @@ namespace test
         { boxColor(sender); }
         private void text14_TextChanged(object sender, TextChangedEventArgs e)
         { boxColor(sender); }
-        private void date15_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        private void text15_TextChanged(object sender, TextChangedEventArgs e)
         { boxColor(sender); }
-        // number referes to row of item, there are no items in row 16, therfore this is missed out in numbering
-        private void text17_TextChanged(object sender, TextChangedEventArgs e)
+        private void date16_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         { boxColor(sender); }
-        private void date18_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        // number referes to row of item, there are no items in row 17, thefore this is missed out in numbering
+        private void text18_TextChanged(object sender, TextChangedEventArgs e)
         { boxColor(sender); }
         private void text19_TextChanged(object sender, TextChangedEventArgs e)
         { boxColor(sender); }
+        private void date20_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        { boxColor(sender); }
+        private void text21_TextChanged(object sender, TextChangedEventArgs e)
+        { boxColor(sender); }
+        private void text22_TextChanged(object sender, TextChangedEventArgs e)      
+        { boxColor(sender); }
+        private void date23_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        { boxColor(sender); }
+        private void text24_TextChanged(object sender, TextChangedEventArgs e)
+        { boxColor(sender); }
+        private void text25_TextChanged(object sender, TextChangedEventArgs e)
+        { boxColor(sender); }
+        private void text26_TextChanged(object sender, TextChangedEventArgs e)
+        { boxColor(sender); }
+        private void text27_TextChanged(object sender, TextChangedEventArgs e)
+        { boxColor(sender); }
+        private void text28_TextChanged(object sender, TextChangedEventArgs e)
+        { boxColor(sender); }
+        private void select29_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        { boxColor(sender); }
+        private void text30_TextChanged(object sender, TextChangedEventArgs e)
+        { boxColor(sender); }
+        private void text31_TextChanged(object sender, TextChangedEventArgs e)
+        { boxColor(sender); }
+        private void text32_TextChanged(object sender, TextChangedEventArgs e)
+        { boxColor(sender); }
+        private void text33_TextChanged(object sender, TextChangedEventArgs e)
+        { boxColor(sender); }
+        private void text34_TextChanged(object sender, TextChangedEventArgs e)
+        { boxColor(sender); }
+        private void text35_TextChanged(object sender, TextChangedEventArgs e)
+        { boxColor(sender); }
+        private void text36_TextChanged(object sender, TextChangedEventArgs e)
+        { boxColor(sender); }
+        private void text37_TextChanged(object sender, TextChangedEventArgs e)
+        { boxColor(sender); }
+        private void select38_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        { boxColor(sender); }
+        // no items in row 39, diversion metrics
+        private void text40_TextChanged(object sender, TextChangedEventArgs e)
+        { boxColor(sender); }
+        private void text41_TextChanged(object sender, TextChangedEventArgs e)
+        { boxColor(sender); }
+        private void text42_TextChanged(object sender, TextChangedEventArgs e)
+        { boxColor(sender); }
+        private void text43_textChanged(object sender, TextChangedEventArgs e)
+        { boxColor(sender); }
+        private void text44_TextChanged(object sender, TextChangedEventArgs e)
+        { boxColor(sender); }
+        private void text45_TextChanged(object sender, TextChangedEventArgs e)
+        { boxColor(sender); }      
+        private void text46_TextChanged(object sender, TextChangedEventArgs e)
+        { boxColor(sender); }
+
     }
 }
